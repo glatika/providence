@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+import "timestamp.proto";
+
+option go_package = "github.com/glatika/providence/deliveries/grpc/market/market_pb";
+
+service BarnMarketProvider {
+    rpc GetAllStock (GetAllPagingRequest) returns (stream Stock);
+    rpc GetAllStockTasks (GetAllPagingRequest) returns (stream Task);
+    rpc RegisterStockVariant (RegisterStockVariantRequest) returns (Empty);
+    rpc RegisterTaskToStock (RegisterTaskToStockRequest) returns (RegisterTaskToStockResponse);
+}
+
+message Empty {}
+
+message GetAllPagingRequest {
+    int32 page = 1;
+    int32 size = 2;
+}
+
+message Stock {
+    int32 stockid = 1;
+    string variant = 2;
+    string os = 3;
+}
+
+message Task {
+    int32 id = 1;
+    string instruction = 2;
+    string argument = 3;
+    bool delivered = 4;
+    google.protobuf.Timestamp delivered_at = 5;
+    bool reported = 6;
+    google.protobuf.Timestamp reported_at = 7;
+    bool success = 8;
+    string report = 9;
+}
+
+message RegisterStockVariantRequest {
+    string variant = 1;
+    string permission = 2;
+    string ability = 3;
+    string certificate = 4;
+}
+
+message RegisterTaskToStockRequest {
+    int32 stock_id = 1;
+    string instruction = 2;
+    string argument = 3;
+}
+
+message RegisterTaskToStockResponse {
+    bool able = 1;
+    string status = 2;
+}

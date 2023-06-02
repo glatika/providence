@@ -1,0 +1,3 @@
+*.pem
+dbconfig.yml
+model/mock/*

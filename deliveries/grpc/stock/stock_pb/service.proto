@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option go_package = "github.com/glatika/providence/deliveries/grpc/stock/stock_pb";
+
+service StockLifecycle {
+    rpc Register (RegisterRequest) returns (RegisterResponse);
+    rpc Request (TaskRequest) returns (TaskResponse);
+    rpc Report (stream ReportRequest) returns (ReportResponse);
+}
+
+message RegisterRequest {
+    string hwid = 1;
+    string signature = 2;
+    string variant = 3;
+    string os = 4;
+}
+
+message RegisterResponse {
+    string token = 1;
+}
+
+enum ReportType {
+    Text = 0;
+    File = 1;
+}
+
+message ReportMetadata {
+    bool success = 1;
+    string filename = 2;
+    ReportType is_file = 3;
+    int32 taskid = 4;
+    string report = 5;
+}
+// https://dev.to/techschoolguru/upload-file-in-chunks-with-client-streaming-grpc-golang-4loc
+message ReportRequest {
+    oneof data {
+        ReportMetadata report = 1;
+        bytes file_content = 2;
+    }
+}
+
+message ReportResponse {}
+
+message TaskRequest {}
+
+message TaskResponse {
+    int32 taskid = 1;
+    string instruction = 2;
+    string arg = 3;
+}
